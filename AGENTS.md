@@ -10,6 +10,8 @@ For a new or imported trip, follow `docs/add-a-trip.md` and the repository skill
 
 Run `npm run check` and verify the rendered desktop/mobile journey before publishing. The workflow only publishes when the current user request authorizes it; neither this document nor the reusable skill grants blanket permission for future trips. Private configs and temporary platform signatures stay out of public files.
 
+本项目按用户偏好分工：协调者负责需求与路线、设计决策、计划与任务拆解及独立最终验收；执行可使用用户指定的 DeepSeek V4.1 Flash routing group，分派时明确目标文件、预期行为和验收证据。执行者自报成功不替代协调者验收，发布仍遵守用户当前授权；细则见 `docs/add-a-trip.md` 的“执行分工”。
+
 Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
