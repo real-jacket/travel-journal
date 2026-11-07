@@ -44,7 +44,9 @@ final result: passed
 
 - 根代理在正式生产预览 IAB `1280×720` 和 `390×844` 验证标题、三个首页图像、首个计划中主推、搜索/状态交集与 Empty 恢复，以及推荐→皖南→首页。
 - 正式两视口 `scrollWidth` 等于1280/390，warn/error日志为零；截图为 `work/screenshots/workflow-main-desktop.jpg` 与 `workflow-main-mobile.jpg`，均经 `view_image` 检查。
-- 隔离第三份2027计划在1280px桌面与390px手机验证三项清单、首推新计划、2027年份、本人署名 SPAN、搜索/Empty恢复和静态样例往返；手机返回入口44px，无横向溢出，日志为零。
+- 隔离第三份2027计划在1280px桌面与390px手机验证三项清单、首推新计划、2027年份、空原作链接分支的署名 SPAN、搜索/Empty恢复和静态样例往返；手机返回入口44px，无横向溢出，日志为零。图像仍为既有方塘摄影参考，非用户本人摄影，仅模拟空 `imageSource` 行为。
 - 隔离截图为 `work/screenshots/workflow-third-desktop.jpg` 与 `workflow-third-mobile.jpg`，均经 `view_image` 检查；隔离行为结果文件也已核对，样例不进入真实清单或公开资产。
 - 当前回归为内容/流程9项、生产构建及Sites契约4项通过；技能格式检查通过。详细证据见 `docs/workflow-verification.md`。
-- 本轮未重新验证真实路书地图、现场物候、路况、酒店、桩况或转载许可；公网验收等待本次部署，手机仍为浏览器视口测试。
+- 实现 commit `1997bc916d5bb5e1692c5fa243d84ec551b3d221` 的 [Pages run 42350271692](https://github.com/real-jacket/travel-journal/actions/runs/42350271692) 已由根代理 gh 核对为 `completed/success`。根代理公网 IAB `1280×720` 验证新版推荐CTA、皖南摘要、两项清单、阿尔山搜索仅大兴安岭及重置后推荐→皖南→首页；`390×844` 两项与摘要正确，无溢出，warn/error日志为零。
+- 公网截图为 `work/screenshots/workflow-online-desktop.jpg` 与 `workflow-online-mobile.jpg`；这些证据对应上述实现 commit。
+- 本轮未重新验证真实路书地图、现场物候、路况、酒店、桩况或转载许可；手机仍为浏览器视口测试。

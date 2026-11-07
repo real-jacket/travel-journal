@@ -55,12 +55,18 @@ npm run trip:new -- workflow-demo-2027
 - 推荐→皖南→首页实际往返成功；两视口 `scrollWidth` 等于视口宽度，日志 warn/error 为零。
 - 正式截图：`work/screenshots/workflow-main-desktop.jpg`、`work/screenshots/workflow-main-mobile.jpg`，根代理已通过 `view_image` 检查。
 - 隔离三项样例在 `http://127.0.0.1:4181/travel-journal/` 经桌面1280px与手机390px验证，主推 `yunnan-2027-eval`，卡片年份为2027。
-- 样例本人照片空 `imageSource` 渲染为署名 SPAN，无空链接；云南搜索一项、历史交集 Empty及恢复、推荐→无脚本静态样例→首页均成功。
+- 样例验证空原作链接分支的署名 SPAN，无空链接；使用的是既有方塘参考图，非用户本人摄影，仅模拟空 `imageSource` 行为。云南搜索一项、历史交集 Empty及恢复、推荐→无脚本静态样例→首页均成功。
 - 样例手机返回入口44px，`scrollWidth=390`，日志为零；根代理核对隔离 `eval-results.json` 与第三份桌面/手机截图。
 - 样例截图：`work/screenshots/workflow-third-desktop.jpg`、`work/screenshots/workflow-third-mobile.jpg`，已通过 `view_image` 检查；样例未迁入真实清单或 `public/`。
 
-## 待独立验收的边界
+## 公网部署验收
 
-- 公网结果等待本次提交部署后独立验收；本记录不提前宣称上线或线上通过。
+- 实现 commit `1997bc916d5bb5e1692c5fa243d84ec551b3d221` 对应 [Pages run 42350271692](https://github.com/real-jacket/travel-journal/actions/runs/42350271692)，根代理以 gh 独立核对为 `completed/success`；此处记录实现 commit 的验收证据。
+- 根代理在 IAB 打开 [公开首页](https://real-jacket.github.io/travel-journal/)，新版“打开推荐路书”与皖南推荐摘要正确，公开清单仍为两项。
+- `1280×720` 搜索“阿尔山”仅显示大兴安岭；重置后推荐→皖南→首页成功。`390×844` 无横向溢出，两项与推荐摘要正确，warn/error日志为零。
+- 公网截图：`work/screenshots/workflow-online-desktop.jpg`、`work/screenshots/workflow-online-mobile.jpg`。
+
+## 剩余边界
+
 - 本轮未开展真实新旅行研究，未重新验证地图服务、现场物候、路况、酒店、桩况与第三方图片转载许可。
 - 手机为 IAB 视口验证，不代表真实手机硬件；发布授权仍以用户当次请求为准。
