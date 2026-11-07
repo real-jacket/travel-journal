@@ -1,0 +1,4 @@
+interface:
+  display_name: "山野取景 · 新增旅行"
+  short_description: "整理新的摄影旅行计划，接入山野取景网站并验证发布流程"
+  default_prompt: "使用 $travel-journal 为我新增一份旅行计划，并接入山野取景入口网站。"

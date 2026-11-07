@@ -67,10 +67,10 @@
 .hero-trip-note { margin-top: 24px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--muted-foreground); }
 .hero-photo a { display: block; }
 .hero-photo img { width: 100%; aspect-ratio: 1.7; object-fit: cover; border-radius: 3px; }
-.hero-photo figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; color: var(--muted-foreground); font-size: 10px; line-height: 1.6; }
+.hero-photo figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; color: var(--muted-foreground); font-size: 10px; line-height: 1.6; }
 .hero-photo figcaption a, .photo-credit, .site-footer > a:last-child { display: inline-flex; align-items: center; gap: 5px; }
 .hero-photo figcaption svg, .photo-credit svg, .site-footer > a:last-child svg { width: 13px; height: 13px; }
-.hero-photo figcaption a { border-bottom: 1px solid var(--border); white-space: nowrap; }
+.hero-photo figcaption a { border-bottom: 1px solid var(--border); }
 .intro-note { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 0; border-block: 1px solid var(--border); }
 .intro-note p { font-size: 12px; line-height: 1.8; color: var(--muted-foreground); }
 .intro-note > span { flex-shrink: 0; font-size: 11px; letter-spacing: .08em; }
@@ -115,7 +115,8 @@ h2 { font: 700 36px/1.4 var(--display); letter-spacing: -.025em; }
 .trip-card [data-slot="card-footer"] { background: transparent; }
 .trip-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .trip-footer p { font-size: 10px; line-height: 1.8; color: var(--muted-foreground); }
-.photo-credit { align-self: start; font-size: 10px; line-height: 1.6; color: var(--muted-foreground); text-decoration: underline; text-underline-offset: 4px; }
+.photo-credit { align-self: start; font-size: 10px; line-height: 1.6; color: var(--muted-foreground); }
+.photo-credit[href] { text-decoration: underline; text-underline-offset: 4px; }
 [data-slot="empty"] { min-height: 320px; border: 1px solid var(--border); background: var(--card); }
 [data-slot="empty-title"] { font: 700 24px/1.4 var(--display); }
 

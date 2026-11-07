@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
+import { trips, renderTripLinks } from "./src/data/trips.js";
 
 export default defineConfig({
   base: "/travel-journal/",
@@ -21,5 +22,8 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), {
+    name: "travel-links",
+    transformIndexHtml: (html) => html.replace("<!-- TRAVEL_LINKS -->", renderTripLinks(trips)),
+  }],
 });

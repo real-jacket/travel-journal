@@ -43,6 +43,15 @@ export const trips = [
   },
 ];
 
+export function getFeaturedTrip(items) {
+  return items.find((trip) => trip.status === "planned") || items[0];
+}
+
+export function renderTripLinks(items) {
+  const escape = (text) => text.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+  return items.map((trip) => `<a href="./${escape(trip.path)}">${escape(trip.title)}</a>`).join(" · ");
+}
+
 export function filterTrips(items, query = "", status = "all") {
   const terms = query.normalize("NFKC").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   return items.filter((trip) => {

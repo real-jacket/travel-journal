@@ -27,9 +27,8 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - run: npm test
-      - run: npm run build
-      - run: npm run test:sites
+      - name: Check travel content and build
+        run: npm run check
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

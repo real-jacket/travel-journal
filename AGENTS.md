@@ -6,6 +6,10 @@ This is a travel-project entry site. Preserve both complete roadbooks, their pho
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 
+For a new or imported trip, follow `docs/add-a-trip.md` and the repository skill at `skills/travel-journal/SKILL.md`. Create an ignored draft with `npm run trip:new -- <slug>`, then maintain the finished trip in `src/data/trips.js` and `public/`. The first `planned` item is featured, falling back to the first item. Avoid trip-specific homepage copy or fixed project-count assertions. Keep the catalog nonempty.
+
+Run `npm run check` and verify the rendered desktop/mobile journey before publishing. The workflow only publishes when the current user request authorizes it; neither this document nor the reusable skill grants blanket permission for future trips. Private configs and temporary platform signatures stay out of public files.
+
 Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
