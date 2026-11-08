@@ -1,5 +1,7 @@
 # 大兴安岭路书公开迁移
 
+> 历史记录（2026-11-07 迁移时写成），仅供回溯，不随后续改动更新。
+
 源文件：`原项目：outputs/2026-daxinganling-south-route.html`。
 发布入口：`public/trips/khingan/index.html`。原文件未修改。
 

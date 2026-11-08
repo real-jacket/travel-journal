@@ -1,70 +1,69 @@
 # 山野取景 · 旅行路书
 
-一个集中管理摄影旅行项目的入口网站。目前包含皖南四天秋日自驾与大兴安岭九天南线追秋的完整路书。
-
-- 首页可以按目的地、路线、题材搜索，并按“计划中 / 历史路书”筛选。
-- 两份完整路书各自保留原有地图、行程、照片参考、住宿与出行准备。
-- 皖南以 2026.11.19—22 为四天候选窗口；大兴安岭为当时行程的历史归档，不表示旅行已完成。
+集中管理摄影旅行项目的入口网站：首页按目的地、路线、题材搜索，按“计划中 / 历史路书”筛选；每份完整路书保留自己的地图、行程、照片参考、住宿与出行准备。例如皖南是四天候选计划，大兴安岭是历史归档，不表示旅行已完成。
 
 网站：<https://real-jacket.github.io/travel-journal/>
 
-## 开发
+## 快速开始
 
-使用 React、Vite、Tailwind CSS 和 shadcn/ui。Node.js 24，npm。
-
-```sh
-npm ci
-npm run dev
-```
-
-默认路径为 `/travel-journal/`，与 GitHub Pages 项目路径一致。
+React + Vite + Tailwind CSS + shadcn/ui，Node ≥ 24（见 `.nvmrc`），pnpm 11（已由 volta 提供，无需 corepack）。
 
 ```sh
-npm test
-npm run build
-npm run preview
+pnpm install --frozen-lockfile
+pnpm dev        # http://localhost:5173/travel-journal/
+pnpm check      # 测试 + 生产构建 + Sites 契约检查
+pnpm preview    # 预览 dist/client 构建结果
 ```
 
-构建产物在 `dist/client/`。`main` 分支推送会由 `.github/workflows/pages.yml` 自动检查、构建并部署 GitHub Pages。Product Design 模板的可选 Sites 运行文件保留，但不会发布到 Pages。
+站点路径固定为 `/travel-journal/`，与 GitHub Pages 一致；开发和预览服务都能直接打开 `/travel-journal/trips/<slug>/`。
 
-## 新增旅行的标准流程
+## 目录
 
-完整步骤见 [新增一份旅行路书](docs/add-a-trip.md)。从新计划开始和接入已有 HTML 都走同一条流程：需求 → 资料与专业成片 → 完整路书 → 清单接入 → 验证 → 按本次要求发布。
+| 路径 | 内容 |
+|---|---|
+| `src/` | 首页应用 |
+| `src/data/trips.js` | 旅行清单，首页由它生成 |
+| `public/trips/<slug>/` | 每份完整路书及其运行资产 |
+| `public/images/` | 首页封面 |
+| `public/vendor/map/` | 路书共用的地图模块与本地 vendor（见 [地图选型](docs/map-selection.md)） |
+| `scripts/` | 新建草稿、地图构建、Sites 构建脚本 |
+| `templates/` | 需求 brief 与入口字段模板 |
+| `skills/travel-journal/` | 新增旅行的可复用技能与调研手册 |
+| `docs/` | 流程、设计与记录，索引见 [docs/README.md](docs/README.md) |
+| `work/` | 本机草稿与研究资料，Git 忽略，不发布 |
 
-```sh
-npm run trip:new -- yunnan-2027
-```
+## 新增一趟旅行
 
-命令只生成 `work/trips/yunnan-2027/brief.md` 与 `entry.json` 草稿，拒绝覆盖已有旅行。将示例 ID 换成下一次旅行的唯一名称，再填写 [需求模板](templates/trip-brief.md) 和 [入口字段模板](templates/trip-entry.json)。
+完整步骤见 [新增一份旅行路书](docs/add-a-trip.md)，新计划和已有 HTML 走同一条流程：
 
-把完整路书放到 `public/trips/<slug>/index.html`，加上 `../../` 返回首页；把封面与必需资产放到 `public/`，再把填写完成的清单项加入 `src/data/trips.js`。首页的推荐、年份、数量、搜索和无 JavaScript 入口由清单更新，不需要改首页组件或为第三份旅行修改测试。
+1. `pnpm trip:new <slug>` 生成 `work/trips/<slug>/` 草稿（不覆盖已有旅行）。
+2. 填需求 brief，用 agent-reach 调研并记台账。
+3. 做完整路书放入 `public/trips/<slug>/`，封面放 `public/images/`。
+4. 把入口对象加入 `src/data/trips.js`，不必改首页组件或测试。
+5. `pnpm check`，再在浏览器验收桌面与手机。
 
-首页推荐第一个“计划中”的项目，没有时回退到首项。要推荐新旅行，将它放在其他计划中项目之前。`planned` 表示计划中，`archived` 表示历史路书。
+## 用 Claude Code / Codex
 
-```sh
-npm run check
-```
-
-这会运行资料/接入检查、生产构建和构建契约检查。之后实际验证桌面、手机与首页往返，再按本次要求提交；`main` 的 Pages 工作流会运行同样的检查并发布。
-
-## 用 Codex 继续添加
-
-仓库提供可复用技能 [travel-journal](skills/travel-journal/SKILL.md)。它读取上述流程与模板；本机安装后，下次可以直接说：
-
-> 使用 $travel-journal 新增一份旅行计划：目的地、出发地、日期/天数、人数/预算、交通和拍摄重点如下……本次请接入首页并发布到 GitHub Pages。
-
-也可以指定已有路书源文件，让它完成资产迁移、署名、入口和检查。仅需要本地草稿时，在请求中说明范围即可。本机技能入口指向仓库中的维护副本。
-
-换电脑时先检出这个仓库，再在项目根目录建立技能链接；如果目标已存在，先核对它指向哪里，不覆盖已有技能：
+仓库技能 [travel-journal](skills/travel-journal/SKILL.md) 读取上述流程与模板。Claude Code 通过 `.claude/skills/travel-journal` 自动发现，无需安装。Codex 需要在本机建一次链接；目标已存在时先核对指向，不要覆盖：
 
 ```sh
 ln -s "$PWD/skills/travel-journal" "$HOME/.codex/skills/travel-journal"
 ```
 
-链接保留技能与仓库流程、模板的关系，拉取更新后无需复制多个版本。
+示例请求：
 
-## 资产与发布范围
+> 使用 $travel-journal 新增一份旅行计划：目的地、出发地、日期/天数、人数/预算、交通和拍摄重点如下……本次请接入首页并发布到 GitHub Pages。
 
-首页图片放在 `public/images/`。正文及图片保留作者与原作出处；摄影作品没有自动获得转载授权，不把参考作品称为本人摄影。远程地图、平台原帖和大兴安岭页的 CDN 依赖需要网络。
+## 部署
 
-本项目仅迁移运行所需资产；原始工作目录不变。私有地图配置、临时平台签名、`.env` 与研究缓存未发布。
+推送 `main` 触发 `.github/workflows/pages.yml`：检查、构建并部署 GitHub Pages。Pull Request 只运行 `pnpm check`，不部署。是否发布以用户当次要求为准。
+
+## 资产与授权边界
+
+- 正文和图片保留作者与原作出处；摄影作品没有自动获得转载授权，不把参考作品称为本人摄影。
+- 远程地图瓦片、平台原帖和部分 CDN 依赖需要网络。
+- 只迁移运行所需资产；私有地图配置、平台临时签名、`.env` 和研究缓存不进入公开文件。
+
+## 文档
+
+[docs/README.md](docs/README.md) 列出全部流程、设计、调研手册、模板与历史记录。

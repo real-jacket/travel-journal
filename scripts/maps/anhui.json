@@ -1,0 +1,147 @@
+{
+  "routesSource": "public/trips/anhui/map/routes.geojson was converted from the roadbook's recorded OSRM geometry (routing.openstreetmap.de, 2026-11-06), 2 m simplified; check it with: pnpm map:build anhui --validate",
+  "base": {
+    "url": "https://build.protomaps.com/20261107.pmtiles",
+    "tiers": [
+      {
+        "bbox": [
+          112.4,
+          26.3,
+          120.0,
+          34.9
+        ],
+        "maxzoom": 7
+      },
+      {
+        "corridor": 6,
+        "bbox": [
+          117.6,
+          29.65,
+          119.2,
+          31.25
+        ],
+        "minzoom": 8,
+        "maxzoom": 10
+      },
+      {
+        "bbox": [
+          117.85,
+          29.89,
+          119.09,
+          31.09
+        ],
+        "minzoom": 11,
+        "maxzoom": 12
+      },
+      {
+        "corridor": 8,
+        "clip": [
+          117.8,
+          29.85,
+          119.15,
+          31.15
+        ],
+        "minzoom": 13,
+        "maxzoom": 14
+      }
+    ]
+  },
+  "terrain": {
+    "url": "https://download.mapterhorn.com/planet.pmtiles",
+    "tiers": [
+      {
+        "bbox": [
+          112.4,
+          26.3,
+          120.0,
+          34.9
+        ],
+        "maxzoom": 6
+      },
+      {
+        "bbox": [
+          113.8,
+          28.6,
+          119.4,
+          32.9
+        ],
+        "minzoom": 7,
+        "maxzoom": 7
+      },
+      {
+        "bbox": [
+          117.6,
+          29.65,
+          119.2,
+          31.25
+        ],
+        "minzoom": 8,
+        "maxzoom": 10
+      },
+      {
+        "corridor": 5,
+        "clip": [
+          117.8,
+          29.85,
+          119.15,
+          31.15
+        ],
+        "minzoom": 11,
+        "maxzoom": 11
+      }
+    ]
+  },
+  "landcover": {
+    "format": "webp",
+    "tiers": [
+      {
+        "bbox": [
+          112.4,
+          26.3,
+          120.0,
+          34.9
+        ],
+        "minzoom": 4,
+        "maxzoom": 7,
+        "master": 8
+      },
+      {
+        "bbox": [
+          117,
+          27.5,
+          120,
+          32.8
+        ],
+        "minzoom": 8,
+        "maxzoom": 9,
+        "master": 10
+      },
+      {
+        "bbox": [
+          117.6,
+          29.65,
+          119.2,
+          31.25
+        ],
+        "minzoom": 10,
+        "maxzoom": 11
+      },
+      {
+        "bbox": [
+          117.85,
+          29.89,
+          119.09,
+          31.09
+        ],
+        "minzoom": 12,
+        "maxzoom": 12
+      }
+    ]
+  },
+  "bbox": [
+    117.85,
+    29.89,
+    119.09,
+    31.09
+  ]
+}

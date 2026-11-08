@@ -30,8 +30,9 @@ export async function createTripDraft(root, slug) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    if (process.argv.length !== 3) throw new Error("用法：npm run trip:new -- <slug>");
-    const destination = await createTripDraft(projectRoot, process.argv[2]);
+    const args = process.argv.slice(2).filter((arg) => arg !== "--"); // pnpm may forward a literal "--"
+    if (args.length !== 1) throw new Error("用法：pnpm trip:new <slug>");
+    const destination = await createTripDraft(projectRoot, args[0]);
     console.log(`旅行草稿已创建：${path.relative(projectRoot, destination)}/\n填写 brief.md 和 entry.json，再按 docs/add-a-trip.md 接入。草稿不会发布。`);
   } catch (error) {
     console.error(error.code === "EEXIST" ? "草稿已存在，请继续编辑原草稿；未覆盖任何文件。" : error.message);

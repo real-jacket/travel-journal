@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild: true
+# tailwind 4.3.5 was published inside the 1-day release-age window; drop once it ages out.
+minimumReleaseAgeExclude:
+  - tailwindcss
+  - "@tailwindcss/*"

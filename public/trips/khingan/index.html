@@ -11,7 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="../../vendor/map/maplibre-gl/5.24.0/maplibre-gl.css">
+  <link rel="stylesheet" href="../../vendor/map/trip-map.css">
   <style>
     :root {
       --forest-950:#142c23; --forest-900:#203d30; --forest-800:#315340; --moss:#58745e;
@@ -86,43 +87,42 @@
     .route-facts{display:flex;gap:24px;color:var(--rust);font-size:14px;margin-top:22px}
     .map-section{background:#eceee5}
     .map-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;border-radius:14px;overflow:hidden;background:var(--paper-strong)}
-    .map-wrap{position:relative;height:560px;background:#dce5d8}#map{height:100%;width:100%}
-    .route-panel{height:560px;padding:20px;overflow:auto}
+    .map-wrap{position:relative;height:600px;background:#f3eee1}#map{height:100%;width:100%}
+    .route-panel{height:600px;padding:20px;overflow:auto}
     .route-panel-title{font-size:13px;color:var(--ink-muted);padding:0 8px 18px}
     .stop-button{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:12px;width:100%;min-height:68px;padding:12px 8px;border:0;border-bottom:1px solid var(--line);background:transparent;text-align:left;border-radius:6px}
     .stop-button strong{display:block;font-size:14px;font-weight:500}.stop-button small{display:block;color:var(--ink-muted);font-size:12px;margin-top:4px}
     .stop-button.is-active,.stop-button:hover{background:#eee8d8}
     .stop-number{display:grid;place-items:center;border:1px solid #cbd2c4;border-radius:50%;width:28px;height:28px;font-size:12px;color:var(--ink-muted)}
     .stop-button.is-active .stop-number{background:var(--forest-900);color:var(--white);border-color:var(--forest-900)}
-    .map-pin,.photo-pin{display:grid;place-items:center;border:2px solid white;border-radius:50%;background:var(--rust);color:white;font-weight:600;box-shadow:0 3px 9px #263c3133}
-    .map-pin{width:34px;height:34px}.photo-pin{width:24px;height:24px;background:var(--gold);color:var(--forest-950);font-size:11px}
-    .map-pin.is-optional{background:var(--forest-800)}
-    .map-reset{position:absolute;top:14px;left:54px;z-index:500;min-height:44px;background:var(--paper-strong);border:0;border-radius:8px;padding:9px 14px;font:500 13px var(--body-font);box-shadow:0 3px 14px #263c311c}
-    .map-provider{position:absolute;right:14px;top:14px;z-index:500;padding:10px 13px;background:var(--paper-strong);border-radius:8px;font-size:12px}
-    .map-provider span{display:none}.map-provider a{text-decoration:none;color:var(--rust)}
-    .map-note{position:absolute;bottom:28px;left:14px;max-width:320px;z-index:500;padding:12px 16px;background:var(--paper-strong);color:var(--ink-muted);font-size:12px;border-radius:8px;pointer-events:none}
+    .map-reset{position:absolute;top:14px;left:70px;z-index:5;min-height:44px;background:var(--paper-strong);color:var(--forest-900);border:1px solid #d9cfb8;border-radius:10px;padding:9px 14px;font:500 13px var(--body-font);box-shadow:0 3px 14px #263c311c;cursor:pointer}
+    .map-reset:hover{background:#eee8d8}
+    .map-provider{position:absolute;right:14px;top:14px;z-index:5;display:flex;align-items:center;min-height:44px;padding:0 14px;background:var(--paper-strong);border:1px solid #d9cfb8;border-radius:10px;font-size:12px;box-shadow:0 3px 14px #263c311c}
+    .map-provider a{text-decoration:none;color:var(--rust)}
+    .map-navigation{margin-top:14px;padding:6px 20px;border:1px solid var(--line);border-radius:14px;background:var(--paper-strong)}
+    .map-navigation summary{display:flex;align-items:center;gap:12px;min-height:48px;cursor:pointer;font-size:14px;font-weight:500;color:var(--forest-900)}
+    .map-navigation summary span{flex:1;color:var(--ink-muted);font-size:12px;font-weight:400}
+    .map-navigation summary::after{content:"＋";font-size:20px;line-height:1;color:var(--ink-muted)}
+    .map-navigation[open] summary::after{content:"−"}
+    .map-navigation>p{margin:4px 0 14px;color:var(--ink-muted);font-size:13px;line-height:1.7;max-width:70ch}
+    .map-navigation ol{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px;padding:0}
+    .map-navigation li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+    .map-navigation li span{font-size:12px;color:var(--rust);font-weight:500}
+    .map-navigation li p{grid-column:1 / -1;margin:0;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+    .map-navigation li a{grid-column:2;grid-row:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;color:var(--ink);font-size:13px;text-decoration:none;white-space:nowrap}
+    .map-navigation li a:hover{background:var(--sand)}
+    .map-note{margin:14px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.7}
+    .terrain-legend{margin-top:10px}
     .route-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--ink-muted);margin-top:18px}
-    .route-legend span{display:flex;align-items:center;gap:8px}.route-legend i{width:18px;height:3px;background:var(--rust)}
-    .route-legend i.photo{width:9px;height:9px;border-radius:50%;background:var(--gold)}.route-legend i.road{background:#ccaa50}
-    .leaflet-container{font-family:var(--body-font)}
-    .leaflet-popup-content-wrapper{width:400px;max-width:calc(100vw - 32px);border-radius:14px;background:var(--paper-strong);box-shadow:0 18px 48px #142c2333}
-    .leaflet-popup-content{width:360px!important;max-width:calc(100vw - 72px);margin:18px 20px;max-height:420px;overflow:auto;font:14px/1.7 var(--body-font)}
-    .leaflet-popup-close-button{min-width:36px;min-height:36px}
-    .popup-title{font-size:21px;margin:0 0 10px}.popup-copy{font-size:14px;color:var(--ink-muted)}
-    .leaflet-container a.popup-link{color:var(--rust);display:inline-block;min-height:44px}
-    .popup-spots{border-top:1px solid var(--line);padding-top:20px;margin-top:12px}
-    .popup-spots>strong{display:block;margin-bottom:14px;font-size:14px}
-    .popup-spots ul{list-style:none;margin:0;padding:0;display:grid;gap:0}
-    .popup-spots li{display:grid;gap:5px;padding:14px 0;border-bottom:1px solid var(--line)}.popup-spots li span{font-size:13px;color:var(--ink-muted)}
-    .popup-spots li a{color:var(--rust);font-size:13px;min-height:36px}
-    .popup-photo{width:100%;height:auto;max-height:200px;object-fit:contain;display:block;border-radius:8px}
-    .popup-photo-link{display:block}.popup-source{display:block;font-size:11px;color:var(--ink-muted);margin-top:8px}
+    .route-legend span{display:flex;align-items:center;gap:8px}.route-legend i{width:18px;height:4px;border-radius:2px;background:#97502e}
+    .route-legend i.stop{width:12px;height:12px;border-radius:50%;background:#263c31}
+    .route-legend i.photo{width:10px;height:10px;border-radius:50%;background:#97502e}
     .map-detail[hidden]{display:none}
-    .map-detail{display:none}
-    .map-marker-hit{display:grid;place-items:center}
+    .map-detail{display:grid;grid-template-rows:auto minmax(0,1fr) auto;position:absolute;z-index:6;left:14px;bottom:14px;width:384px;max-height:calc(100% - 128px);border-radius:16px;background:var(--paper-strong);border:1px solid #d9cfb8;box-shadow:0 18px 48px #142c2333;overflow:hidden}
+    .map-layout{position:relative}
     @media(max-width:980px){
-      .leaflet-popup{display:none}
-      .map-detail{display:grid;grid-column:1;grid-row:auto;order:3;grid-template-rows:auto minmax(0,1fr) auto;position:fixed;z-index:1700;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom,0px));max-height:min(23dvh,220px);border-radius:16px;background:var(--paper-strong);box-shadow:0 -8px 40px #142c2333;overflow:hidden}
+      .map-detail{grid-column:1;grid-row:auto;order:3;position:fixed;z-index:1700;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom,0px));width:auto;max-height:min(23dvh,220px);border:0;box-shadow:0 -8px 40px #142c2333}
+    }
       .map-detail-head{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 16px;border-bottom:1px solid var(--line)}
       .map-detail-title{flex:1;min-width:0;margin:0;font:600 17px/1.4 var(--display-font);overflow-wrap:anywhere}
       .map-detail-close,.map-detail-back{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:0;border-radius:50%;color:var(--ink);background:var(--paper)}
@@ -149,6 +149,8 @@
       .map-detail-list-label{font-size:12px;color:var(--ink-muted)}
       .map-detail-footer{padding:7px 16px;border-top:1px solid var(--line);background:var(--paper-strong)}
       .map-detail-action{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:8px;color:var(--white);background:var(--forest-900);font-size:14px;text-decoration:none}
+    @media(min-width:981px){
+      .map-detail.is-photo-detail{max-height:calc(100% - 128px)}.map-detail.is-photo-detail .map-detail-body{max-height:none}
     }
     @media(max-width:980px) and (max-height:540px){
       .map-detail{max-height:calc(100dvh - 100px)}
@@ -232,7 +234,8 @@
       h1{font-size:52px}.hero-copy{font-size:15px}
       .choice-grid{gap:36px;grid-template-columns:1fr 1fr}
       .chapter-head,.prep-head,.stay-head{gap:32px}
-      .map-layout{grid-template-columns:1fr}.map-wrap{height:440px}
+      .map-layout{grid-template-columns:1fr}.map-wrap{height:max(420px,62vh)}
+      .map-navigation ol{grid-template-columns:1fr}
       .route-panel{height:auto;display:block;padding:12px;overflow:hidden}.route-panel-title{display:none}
       #stop-list{display:flex;overflow:auto;gap:8px;scrollbar-width:none}.stop-button{flex:0 0 210px;border:1px solid var(--line);padding:10px}
       .itinerary-intro{gap:0 32px}.day-nav{top:64px}
@@ -265,11 +268,9 @@
       .decision-carousel{margin-top:32px}.decision-slide{padding:28px 24px 80px}.decision-slide h3{font-size:22px}
       .chapter-head,.prep-head,.stay-head{margin-bottom:26px}
       .route-facts{margin:16px 0 20px;font-size:13px;gap:18px}
-      .map-wrap{height:440px;padding-bottom:68px}
-      .map-note{bottom:0;left:0;right:0;max-width:none;border-radius:0;padding:12px 14px;font-size:11px;line-height:1.7;height:68px;z-index:0}
-      .map-reset,.map-provider{font-size:12px}.map-provider{top:14px;right:10px;padding:12px 10px}
-      .leaflet-popup-content{max-height:244px;margin:16px;font-size:13px}
-      .popup-title{font-size:20px}.popup-photo{max-height:146px}
+      .map-wrap{height:max(420px,62vh)}
+      .map-note{font-size:11px}
+      .map-reset,.map-provider{font-size:12px}.map-provider{right:10px;padding:0 10px}
       .route-legend{font-size:11px;gap:14px}.stop-button{flex-basis:195px;min-height:68px}
       .itinerary-intro{margin-bottom:24px}.itinerary-intro .button{font-size:13px;padding:10px 14px;min-height:44px}
       .day-nav{top:0;margin:0 -20px;padding:10px 20px;gap:6px;box-shadow:0 8px 16px #263c3108}
@@ -295,7 +296,7 @@
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
     @media print{
-      .desktop-nav,.mobile-dock,.hero-actions,.day-nav,.map-wrap,.carousel-controls,.final-actions{display:none!important}
+      .desktop-nav,.mobile-dock,.hero-actions,.day-nav,.map-wrap,.map-navigation,.carousel-controls,.final-actions{display:none!important}
       .hero-inner{padding:20px 0;display:block}.hero-figure{display:none}
       .shell{width:100%}.choice-section,.map-section,.itinerary-section,.prep-section,.stay-section{padding:24px 0}
       .day-card{break-inside:avoid}.day-photo-list{flex-wrap:wrap}.day-photo-card{flex-basis:45%}
@@ -371,12 +372,15 @@
 
     <section class="map-section" id="map-section">
       <div class="shell">
-        <div class="chapter-head"><div><h2 class="display">先看空间关系，再安排每天的体力</h2><div class="route-facts"><span id="route-km">主线约880公里</span><span id="route-bases">4个住宿基地</span></div></div><p>点击节点定位；高德链接负责实时道路。地图线是路线方向示意，林区施工、单向通行和临时封闭必须以出发当天为准。</p></div>
+        <div class="chapter-head"><div><h2 class="display">先看空间关系，再安排每天的体力</h2><div class="route-facts"><span id="route-km">主线约880公里</span><span id="route-bases">4个住宿基地</span></div></div><p>点击节点定位；地图线沿真实道路绘制，高德链接负责实时导航。林区施工、单向通行和临时封闭必须以出发当天为准。</p></div>
         <div class="map-layout">
-          <div class="map-wrap"><div id="map" aria-label="大兴安岭南线互动地图"></div><button class="map-reset" type="button" id="map-reset">查看全线</button><div class="map-provider"><span>路线示意图 · 金色点为机位</span><a href="https://uri.amap.com/search?keyword=乌兰浩特义勒力特机场&city=乌兰浩特&src=codex.travel&callnative=1" target="_blank" rel="noopener">高德导航</a></div><div class="map-note">棕色线为路线方向示意，不是实时道路。点击主节点会动态适配相邻路线；机位导航以高德搜索结果和现场开放情况为准。</div></div>
+          <div class="map-wrap"><div id="map" aria-label="大兴安岭南线互动地图"></div><button class="map-reset" type="button" id="map-reset">查看全线</button><div class="map-provider"><a href="https://uri.amap.com/search?keyword=乌兰浩特义勒力特机场&city=乌兰浩特&src=codex.travel&callnative=1" target="_blank" rel="noopener">高德导航</a></div></div>
           <aside class="route-panel" aria-label="路线节点"><div class="route-panel-title">从南向北，点按定位</div><div id="stop-list"></div></aside>
         </div>
-        <div class="route-legend" aria-label="地图图例"><span><i></i>路线方向示意</span><span><i class="road"></i>底图公路</span><span><i class="photo"></i>小红书机位参考</span></div>
+        <details class="map-navigation" id="map-navigation"><summary>用高德查看路线 <span id="map-navigation-count"></span></summary><p>按顺序打开每段路线，出发前确认途经点，把起终点改成实际住处和停车入口。</p><ol id="map-navigation-list"></ol></details>
+        <p class="map-note">路线沿真实道路绘制，仅作参考；点击主节点会适配相邻路线，机位导航以高德搜索结果和现场开放情况为准。</p>
+        <div class="route-legend" aria-label="地图图例"><span><i></i>沿真实道路的路线，出发当天再确认路况</span><span><i class="stop"></i>主要节点</span><span><i class="photo"></i>小红书机位参考</span></div>
+        <div class="terrain-legend" id="map-terrain-legend" aria-label="地形图例"></div>
       </div>
     </section>
 
@@ -460,8 +464,9 @@
   </section>
 
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script>window.AMAP_CONFIG = window.AMAP_CONFIG || null;</script>
+  <script src="../../vendor/map/maplibre-gl/5.24.0/maplibre-gl.js"></script>
+  <script src="../../vendor/map/pmtiles/4.5.0/pmtiles.js"></script>
+  <script src="../../vendor/map/trip-map.js"></script>
   <script src="gsap.min.js"></script>
   <script src="ScrollTrigger.min.js"></script>
   <script>
@@ -477,7 +482,7 @@
         { name: '石塘林熔岩与水面', query: '石塘林', city: '阿尔山', note: '摄影师图文 P2–4 为石塘林实拍，可参考熔岩、水面和秋林的组合；从开放栈道取景。杜鹃湖与石塘林按体力二选一。具体拍摄坐标待核实。', source: '阿尔山付费景区超全攻略，每个景点都有附图' }
       ] },
       { name: '乌苏浪子湖', subtitle: '晨雾 · 免费环线', lat: 47.300220, lng: 120.338364, city: '阿尔山', query: '乌苏浪子湖游船码头', photoSpots: [{ name: '哈拉哈河最佳拍摄点（乌苏浪子湖边）', query: '哈拉哈河最佳拍摄点 乌苏浪子湖', city: '阿尔山', note: '笔记正文明确写在乌苏浪子湖边；清晨 7:30 前更容易遇到晨雾，湖边风大，先确认开放和预约。', lat: 47.296800, lng: 120.347200, image: 'xhs-spots/haraha-river.webp', source: '阿尔山必去免费机位' }, { name: '乌苏浪子湖摄影师实拍', query: '乌苏浪子湖', city: '阿尔山', note: '摄影师实拍用于判断光线与场景，不作为精确机位坐标；笔记正文标注为阿尔山乌苏浪子湖。', lat: 47.301500, lng: 120.341500, image: 'xhs-spots/wusu-photographer.webp', source: '乌苏浪子湖摄影师实拍' }, { name: '不冻河晨雾观察点', query: '阿尔山不冻河观景台', city: '阿尔山', note: '该摄影笔记的 5:30 建议针对乌苏浪子湖一带；作者未实地验证不冻河观景台晨雾。这里仅作候选，先确认开放情况，精确坐标待核实。', source: '阿尔山拍晨雾，看这一条就够了，保姆级攻略' }] },
-      { name: '蘑阿公路', subtitle: '森林公路摄影日', lat: 47.360000, lng: 120.700000, city: '阿尔山', query: '蘑阿公路', photoSpots: [{ name: '蘑阿公路入口·蓝房子', query: '蘑阿公路入口 蓝房子', city: '阿尔山', note: '实拍可见蓝色小屋位于道路旁山坡，停在正规停车带，不占道；现场以安全和开放情况为准。', lat: 47.365000, lng: 120.714000, image: 'xhs-spots/blue-house.webp', source: '实拍阿尔山蓝房子的真实场景' }, { name: '森林 S 弯公路机位', query: '蘑阿公路 森林S弯', city: '阿尔山', note: '小红书经验点，具体停车位置随路况变化；当前没有核验到与该弯道完全对应的实拍图，禁止为拍照驶入林道。', lat: 47.402000, lng: 120.783000, source: '蘑阿公路保姆级包车攻略（仅文字参考）' }] },
+      { name: '蘑阿公路', subtitle: '森林公路摄影日', lat: 47.416610, lng: 120.581910, city: '阿尔山', query: '蘑阿公路', photoSpots: [{ name: '蘑阿公路入口·蓝房子', query: '蘑阿公路入口 蓝房子', city: '阿尔山', note: '实拍可见蓝色小屋位于道路旁山坡，停在正规停车带，不占道；现场以安全和开放情况为准。', lat: 47.365000, lng: 120.714000, image: 'xhs-spots/blue-house.webp', source: '实拍阿尔山蓝房子的真实场景' }, { name: '森林 S 弯公路机位', query: '蘑阿公路 森林S弯', city: '阿尔山', note: '小红书经验点，具体停车位置随路况变化；当前没有核验到与该弯道完全对应的实拍图，禁止为拍照驶入林道。', lat: 47.402000, lng: 120.783000, source: '蘑阿公路保姆级包车攻略（仅文字参考）' }] },
       { name: '柴河月亮小镇', subtitle: '月亮天池 · 十大湾', lat: 47.556503, lng: 121.302710, city: '扎兰屯', query: '柴河月亮小镇', photoSpots: [{ name: '同心天池', query: '柴河同心天池', city: '扎兰屯', note: '免费机位参考，适合清晨云海和倒影；先确认道路与开放状态。', lat: 47.601000, lng: 121.257000, image: 'xhs-spots/tongxin-lake.webp', source: '同心天池的晨雾云海' }, { name: '山水岩壁画', query: '柴河山水岩壁画', city: '扎兰屯', note: '小红书笔记明确定位为柴河镇林业局旁、距月亮小镇约 5 公里；入口约 100 米土路，雨后谨慎。', lat: 47.526000, lng: 121.270000, image: 'xhs-spots/chaihe-rock-painting-verified.webp', source: '呼伦贝尔隐藏版奇观·山水岩壁画' }, { name: '十大湾山顶观景台', query: '扎兰屯市绰尔河农场十大湾', city: '扎兰屯', note: '小红书导航常用名称：绰尔河农场十大湾；山顶斜坡和旁侧观景平台均可取景。', lat: 47.535000, lng: 121.365000, image: 'xhs-spots/chaihe-ten-bays.webp', source: '柴河十大湾日落' }] },
       { name: '牙克石', subtitle: '午餐与补给', lat: 49.285437, lng: 120.728308, city: '牙克石', query: '牙克石市' },
       { name: '莫尔格勒河', subtitle: '九曲河道 · 金色草原', lat: 49.461573, lng: 119.709888, city: '呼伦贝尔', query: '呼伦贝尔大草原莫尔格勒河景区', photoSpots: [{ name: '莫日格勒河南线免费机位', query: '莫日格勒河南线 免费观景点', city: '呼伦贝尔', note: '小红书多次提到南线免费视角；不要驶入草场和私人牧场。', lat: 49.455000, lng: 119.682000, image: 'xhs-spots/molger-3.webp', source: '莫尔格勒河三号观景台' }, { name: '莫日格勒河 3 号观景台', query: '莫日格勒河3号观景台', city: '陈巴尔虎旗', note: '导航名称比“呼伦贝尔大草原”更具体，旺季注意收费和拥堵。', lat: 49.476000, lng: 119.744000, image: 'xhs-spots/molger-3.webp', source: '莫尔格勒河三号观景台' }] },
@@ -515,20 +520,6 @@
       '乌苏浪子湖摄影师实拍': 'https://www.xiaohongshu.com/search_result/68adadf0000000001d02092e'
     };
     const spotImage = image => image ? image.replace('xhs-spots/', 'xhs-spots/opt2/') : image;
-    const outOfChina = (lng, lat) => lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271;
-    function wgs84ToGcj02(lng, lat) {
-      if (outOfChina(lng, lat)) return [lng, lat];
-      const pi = Math.PI;
-      const a = 6378245.0;
-      const ee = 0.00669342162296594323;
-      const transformLat = (x, y) => -100 + 2 * x + 3 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x)) + (20 * Math.sin(6 * x * pi) + 20 * Math.sin(2 * x * pi)) * 2 / 3 + (20 * Math.sin(y * pi) + 40 * Math.sin(y / 3 * pi)) * 2 / 3 + (160 * Math.sin(y / 12 * pi) + 320 * Math.sin(y * pi / 30)) * 2 / 3;
-      const transformLng = (x, y) => 300 + x + 2 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x)) + (20 * Math.sin(6 * x * pi) + 20 * Math.sin(2 * x * pi)) * 2 / 3 + (20 * Math.sin(x * pi) + 40 * Math.sin(x / 3 * pi)) * 2 / 3 + (150 * Math.sin(x / 12 * pi) + 300 * Math.sin(x / 30 * pi)) * 2 / 3;
-      const dLat = transformLat(lng - 105, lat - 35), dLng = transformLng(lng - 105, lat - 35);
-      const radLat = lat / 180 * pi, magic = Math.sin(radLat), magic2 = 1 - ee * magic * magic;
-      const sqrtMagic = Math.sqrt(magic2);
-      return [lng + (dLng * 180) / (a / sqrtMagic * Math.cos(radLat) * pi), lat + (dLat * 180) / (a * (1 - ee) / (magic2 * sqrtMagic) * pi)];
-    }
-    const amapPosition = item => { const [lng, lat] = wgs84ToGcj02(item.lng, item.lat); return [lng, lat]; };
     const dayPhotoSpots = {
       3: baseStops.find(stop => stop.name === '金江沟游客中心').photoSpots,
       4: [{ name: '哈拉哈河最佳拍摄点', image: 'xhs-spots/haraha-river.webp', source: '阿尔山必去免费机位', query: '哈拉哈河最佳拍摄点 乌苏浪子湖', city: '阿尔山' }, { name: '乌苏浪子湖晨雾·摄影师实拍', image: 'xhs-spots/wusu-photographer.webp', source: '乌苏浪子湖摄影师实拍', query: '乌苏浪子湖', city: '阿尔山' }, { name: '不冻河晨雾观察点', source: '阿尔山拍晨雾，看这一条就够了，保姆级攻略', query: '阿尔山不冻河观景台', city: '阿尔山' }],
@@ -550,19 +541,7 @@
     }
 
     let routeMode = roadbookStorage.getItem('roadbook-route') || 'south';
-    let map;
-    let amapMap;
-    let amapMarkers = [];
-    let amapPhotoMarkers = [];
-    let amapRoute;
-    let amapInfoWindow;
-    let amapDriving;
-    let amapSatellite;
-    let amapRoadNet;
-    let amapMode = 'standard';
-    let markerLayer;
-    let photoLayer;
-    let routeLayer;
+    let tripMap;
     let activeDay = Number(roadbookStorage.getItem('roadbook-day') || 1);
 
     function activeStops() {
@@ -589,16 +568,15 @@
       document.getElementById('day9-copy').textContent = withErgun ? '约135公里返回机场，只适合晚班机。早班或中午航班不要启用这条支线。' : '提前60-90分钟处理油量、车损复核、发票与异地还车费用，不安排跨城景点。';
       document.getElementById('day9-distance').textContent = withErgun ? '约135km · 仅晚班机' : '市区约20-30min';
       roadbookStorage.setItem('roadbook-route', routeMode);
-      if (amapMap) renderAmap();
-      else if (map) renderMap();
+      renderMap();
     }
 
     const mobileMapView = matchMedia('(max-width:980px)');
     let detailTrigger = null;
-    let pendingMapPopup = null;
     function closeMapDetail(restoreFocus = false) {
       document.getElementById('map-detail').hidden = true;
       document.documentElement.classList.remove('map-detail-open');
+      tripMap?.clearFocus();
       if (restoreFocus && detailTrigger?.isConnected) detailTrigger.focus({ preventScroll: true });
     }
     function fitMapDetailHeight() {
@@ -658,7 +636,7 @@
       fitMapDetailHeight();
       if (firstOpen) {
         const rect = document.getElementById('map').getBoundingClientRect();
-        if (rect.top > 80 || rect.bottom < 120) window.scrollTo({ top: scrollY + rect.top - 16, behavior: 'instant' });
+        if (rect.top > 80 || rect.bottom < 120) window.scrollTo({ top: scrollY + rect.top - 90, behavior: 'instant' });
         const panelBottom = panel.getBoundingClientRect().bottom;
         const safeBottom = innerHeight - 86;
         if (panelBottom > safeBottom) window.scrollTo({ top: scrollY + panelBottom - safeBottom, behavior: 'instant' });
@@ -674,154 +652,84 @@
       const panel = document.querySelector('.route-panel');
       if (layout && detail && panel && detail.parentElement !== layout) layout.appendChild(detail);
     }
-    mobileMapView.addEventListener('change', () => { closeMapDetail(); map?.closePopup(); if (map) renderMap(); });
+    mobileMapView.addEventListener('change', () => closeMapDetail());
+
+    const stopKey = stop => stop.name;
+    const spotKey = (stop, spot) => `${stop.name}/${spot.name}`;
+    const routeIds = () => routeMode === 'south' ? ['main', 'south'] : ['main', 'ergun'];
+    let itemsById = {};
+    let mapRendered = false;
+
+    function mapPoints(stops) {
+      const points = [];
+      stops.forEach((stop, index) => {
+        points.push({ id: stopKey(stop), name: stop.name, lngLat: [stop.lng, stop.lat], kind: 'stop', label: String(index + 1) });
+        (stop.photoSpots || []).filter(spot => Number.isFinite(spot.lat) && Number.isFinite(spot.lng)).forEach(spot => points.push({ id: spotKey(stop, spot), name: spot.name, lngLat: [spot.lng, spot.lat], kind: 'photo', label: '机' }));
+      });
+      return points;
+    }
+
+    function renderNavigation(stops) {
+      const segments = TripMap.navSegments(stops.map(stop => ({ name: stop.name, lngLat: [stop.lng, stop.lat] })));
+      document.getElementById('map-navigation-count').textContent = `${segments.length}段可核对`;
+      const list = document.getElementById('map-navigation-list');
+      list.replaceChildren();
+      segments.forEach(segment => {
+        const item = document.createElement('li');
+        const label = document.createElement('span'); label.textContent = `第${segment.part}段`;
+        const chain = document.createElement('p'); chain.textContent = segment.stops.map(stop => stop.name).join(' → ');
+        const link = document.createElement('a'); link.textContent = '高德查看 ↗';
+        link.href = TripMap.amapRoute(segment.stops, 'khingan-autumn-guide'); link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', `高德查看第${segment.part}段：${chain.textContent}`);
+        item.append(label, chain, link); list.append(item);
+      });
+    }
+
+    function selectItem(id, fromList, trigger = null) {
+      const entry = itemsById[id];
+      if (!entry) return;
+      const stops = activeStops();
+      const index = stops.indexOf(entry.parent);
+      document.querySelectorAll('.stop-button').forEach((button, i) => button.classList.toggle('is-active', i === index));
+      const isStop = entry.item === entry.parent;
+      tripMap?.focusPoint(id, {
+        fly: fromList,
+        context: isStop ? [stops[index - 1], stops[index + 1]].filter(Boolean).map(stopKey) : [],
+        maxZoom: 9,
+        padding: mobileMapView.matches ? { top: 56, bottom: 40, left: 32, right: 32 } : { top: 72, bottom: 56, left: 420, right: 56 }
+      });
+      showMapDetail(entry.item, entry.parent, trigger);
+    }
 
     function renderMap() {
-      if (!window.L || !map) return;
       closeMapDetail();
-      if (pendingMapPopup) { map.off('moveend', pendingMapPopup); pendingMapPopup = null; }
-      if (markerLayer) markerLayer.clearLayers();
-      if (photoLayer) photoLayer.clearLayers();
-      if (routeLayer) routeLayer.remove();
-      map.invalidateSize({ pan: false });
       const stops = activeStops();
+      itemsById = {};
       const list = document.getElementById('stop-list');
       list.innerHTML = '';
       stops.forEach((stop, index) => {
+        itemsById[stopKey(stop)] = { item: stop, parent: stop };
+        (stop.photoSpots || []).forEach(spot => { itemsById[spotKey(stop, spot)] = { item: spot, parent: stop }; });
         const button = document.createElement('button');
         button.type = 'button';
         button.className = `stop-button${index === 0 ? ' is-active' : ''}`;
         const spotCount = stop.photoSpots?.length ? ` · ${stop.photoSpots.length}个机位` : '';
         button.innerHTML = `<span class="stop-number">${index + 1}</span><span><strong>${stop.name}</strong><small>${stop.subtitle}${spotCount}</small></span>`;
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.stop-button').forEach(item => item.classList.toggle('is-active', item === button));
-        const marker = markerLayer.getLayers()[index];
-        if (pendingMapPopup) { map.off('moveend', pendingMapPopup); pendingMapPopup = null; }
-        map.stop();
-        map.invalidateSize({ pan: false });
-        const context = [stops[index - 1], stop, stops[index + 1]].filter(Boolean);
-        const contextBounds = L.latLngBounds(context.map(item => [item.lat, item.lng]));
-        if (mobileMapView.matches) showMapDetail(stop, stop, button);
-        else { pendingMapPopup = () => { marker.openPopup(); pendingMapPopup = null; }; map.once('moveend', pendingMapPopup); }
-        map.flyToBounds(contextBounds, { paddingTopLeft: [22, 72], paddingBottomRight: [22, 122], maxZoom: 9, duration: .8, easeLinearity: .2 });
-      });
+        button.addEventListener('click', () => selectItem(stopKey(stop), true, button));
         list.append(button);
-        const icon = L.divIcon({ className: 'map-marker-hit', html: `<div class="map-pin${stop.optional ? ' is-optional' : ''}">${index + 1}</div>`, iconSize: [44, 44], iconAnchor: [22, 22] });
-        const spots = (stop.photoSpots || []).map(spot => `<li><strong>${spot.name}</strong><span>${spot.note}</span><a href="${amapUrl(spot)}" target="_blank" rel="noopener">高德搜索此机位</a><small class="popup-source">来源：小红书公开笔记 · ${spot.source || '公开参考'}</small></li>`).join('');
-        const popupSpots = spots ? `<div class="popup-spots"><strong>小红书机位参考</strong><ul>${spots}</ul></div>` : '';
-        L.marker([stop.lat, stop.lng], { icon, title: stop.name }).bindPopup(`<h3 class="popup-title">${stop.name}</h3><p class="popup-copy">${stop.subtitle}</p><a class="popup-link" href="${amapUrl(stop)}" target="_blank" rel="noopener">打开高德定位</a>${popupSpots}`, { routeItem: stop, routeParent: stop, autoPan: !mobileMapView.matches, maxWidth: 310, autoPanPadding: [16, 62] }).addTo(markerLayer);
-        (stop.photoSpots || []).filter(spot => Number.isFinite(spot.lat) && Number.isFinite(spot.lng)).forEach(spot => {
-          const spotIcon = L.divIcon({ className: 'map-marker-hit', html: '<div class="photo-pin">机</div>', iconSize: [44, 44], iconAnchor: [22, 22] });
-          const photo = spot.image ? `<a class="popup-photo-link" href="${photoSourceUrls[spot.source] || spotImage(spot.image)}" target="_blank" rel="noopener"><img class="popup-photo" src="${spotImage(spot.image)}" alt="${spot.name}实拍参考" loading="lazy" onerror="this.style.display='none'"></a><small class="popup-source">来源：小红书公开笔记 · ${spot.source || '公开参考'}</small>` : '';
-          L.marker([spot.lat, spot.lng], { icon: spotIcon, title: spot.name }).bindPopup(`${photo}<h3 class="popup-title">${spot.name}</h3><p class="popup-copy">${spot.note}</p><a class="popup-link" href="${amapUrl(spot)}" target="_blank" rel="noopener">打开高德导航</a>`, { routeItem: spot, routeParent: stop, autoPan: !mobileMapView.matches, maxWidth: 310, autoPanPadding: [16, 62] }).addTo(photoLayer);
-        });
       });
-      // ponytail: schematic polyline; use a routing API only if turn-by-turn geometry becomes necessary.
-      routeLayer = L.polyline(stops.map(stop => [stop.lat, stop.lng]), { color: '#a94f2a', weight: 5, opacity: .85, lineJoin: 'round', dashArray: routeMode === 'ergun' ? '0' : undefined }).addTo(map);
-      requestAnimationFrame(fitRouteOverview);
-    }
-
-    function clearAmapOverlays() {
-      if (!amapMap) return;
-      amapMarkers.forEach(marker => marker.setMap(null));
-      amapPhotoMarkers.forEach(marker => marker.setMap(null));
-      amapRoute?.setMap(null);
-      amapMarkers = [];
-      amapPhotoMarkers = [];
-      amapRoute = null;
-    }
-
-    function buildPhotoMarkup(spot, actionLabel = '打开高德导航') {
-      const photo = spot.image ? `<a class="popup-photo-link" href="${photoSourceUrls[spot.source] || spotImage(spot.image)}" target="_blank" rel="noopener"><img class="popup-photo" src="${spotImage(spot.image)}" alt="${spot.name}实拍参考" loading="lazy" onerror="this.style.display='none'"></a><small class="popup-source">来源：小红书公开笔记 · ${spot.source || '公开参考'}</small>` : '';
-      return `${photo}<h3 class="popup-title">${spot.name}</h3><p class="popup-copy">${spot.note}</p><a class="popup-link" href="${amapUrl(spot)}" target="_blank" rel="noopener">${actionLabel}</a>`;
-    }
-
-    function renderAmap() {
-      if (!amapMap || !window.AMap) return;
-      clearAmapOverlays();
-      const stops = activeStops();
-      const list = document.getElementById('stop-list');
-      list.innerHTML = '';
-      const allOverlays = [];
-      stops.forEach((stop, index) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = `stop-button${index === 0 ? ' is-active' : ''}`;
-        const spotCount = stop.photoSpots?.length ? ` · ${stop.photoSpots.length}个机位` : '';
-        button.innerHTML = `<span class="stop-number">${index + 1}</span><span><strong>${stop.name}</strong><small>${stop.subtitle}${spotCount}</small></span>`;
-        button.addEventListener('click', () => {
-          document.querySelectorAll('.stop-button').forEach(item => item.classList.toggle('is-active', item === button));
-          const context = amapMarkers.slice(Math.max(0, index - 1), Math.min(amapMarkers.length, index + 2));
-          amapMap.setFitView(context, false, [72, 22, 132, 22], 9);
-          const marker = amapMarkers[index];
-          setTimeout(() => amapInfoWindow?.open(amapMap, marker.getPosition()), 350);
-        });
-        list.append(button);
-          const marker = new AMap.Marker({ position: amapPosition(stop), content: `<div class="map-pin${stop.optional ? ' is-optional' : ''}">${index + 1}</div>`, offset: new AMap.Pixel(-17, -17), title: stop.name, zIndex: 20 });
-        marker.setMap(amapMap);
-        marker.on('click', () => button.click());
-        amapMarkers.push(marker);
-        allOverlays.push(marker);
-        const spots = (stop.photoSpots || []).map(spot => `<li><strong>${spot.name}</strong><span>${spot.note}</span><a href="${amapUrl(spot)}" target="_blank" rel="noopener">高德搜索此机位</a><small class="popup-source">来源：小红书公开笔记 · ${spot.source || '公开参考'}</small></li>`).join('');
-        const popupSpots = spots ? `<div class="popup-spots"><strong>小红书机位参考</strong><ul>${spots}</ul></div>` : '';
-        marker.on('click', () => amapInfoWindow.setContent(`<h3 class="popup-title">${stop.name}</h3><p class="popup-copy">${stop.subtitle}</p><a class="popup-link" href="${amapUrl(stop)}" target="_blank" rel="noopener">打开高德定位</a>${popupSpots}`));
-        (stop.photoSpots || []).filter(spot => Number.isFinite(spot.lat) && Number.isFinite(spot.lng)).forEach(spot => {
-          const photoMarker = new AMap.Marker({ position: amapPosition(spot), content: '<div class="photo-pin">机</div>', offset: new AMap.Pixel(-12, -12), title: spot.name, zIndex: 30 });
-          photoMarker.setMap(amapMap);
-          photoMarker.on('click', () => { amapInfoWindow.setContent(buildPhotoMarkup(spot)); amapInfoWindow.open(amapMap, photoMarker.getPosition()); });
-          amapPhotoMarkers.push(photoMarker);
-        });
-      });
-      amapRoute = new AMap.Polyline({ path: stops.map(amapPosition), strokeColor: '#a94f2a', strokeWeight: 5, strokeOpacity: .85, lineJoin: 'round', showDir: false, zIndex: 10 });
-      amapRoute.setMap(amapMap);
-      allOverlays.push(amapRoute);
-      requestAmapDriving(stops);
-      requestAnimationFrame(() => amapMap.setFitView(allOverlays, true, [72, 24, 132, 24], 7));
-    }
-
-    function requestAmapDriving(stops) {
-      if (!window.AMap || !amapMap) return;
-      AMap.plugin('AMap.Driving', () => {
-        amapDriving?.clear();
-        amapDriving = new AMap.Driving({ policy: 0, map: null, hideMarkers: true, autoFitView: false, showTraffic: false });
-        const paths = [];
-        let segmentIndex = 0;
-        const nextSegment = () => {
-          if (segmentIndex >= stops.length - 1) {
-            const actualPath = paths.flat();
-            if (actualPath.length > 1) {
-              amapRoute?.setMap(null);
-              amapRoute = new AMap.Polyline({ path: actualPath, strokeColor: '#6b2f1e', strokeWeight: 6, strokeOpacity: .92, lineJoin: 'round', zIndex: 12 });
-              amapRoute.setMap(amapMap);
-              document.querySelector('.map-note').textContent = '棕色线为高德分段驾车路线；黄色线为底图公路。机位导航以高德搜索结果和现场开放情况为准。';
-            }
-            return;
-          }
-          const start = amapPosition(stops[segmentIndex]);
-          const end = amapPosition(stops[segmentIndex + 1]);
-          amapDriving.search(start, end, (status, result) => {
-            if (status === 'complete' && result?.routes?.length) {
-              const segmentPath = result.routes[0].steps.flatMap(step => step.path || []);
-              if (segmentPath.length > 1) paths.push(segmentPath);
-            }
-            segmentIndex += 1;
-            nextSegment();
-          });
-        };
-        nextSegment();
-      });
+      if (window.TripMap) renderNavigation(stops);
+      if (!tripMap) return;
+      tripMap.setPoints(mapPoints(stops));
+      tripMap.setActiveRoute(routeIds());
+      if (mapRendered) tripMap.fitAll();
+      mapRendered = true;
     }
 
     function fitRouteOverview() {
       closeMapDetail();
-      if (amapMap && amapRoute) {
-        amapMap.setFitView([...amapMarkers, amapRoute], false, [72, 24, 132, 24], 7);
-        return;
-      }
-      if (!map || !routeLayer) return;
-      map.stop();
-      map.invalidateSize({ pan: false });
-      map.fitBounds(routeLayer.getBounds(), { paddingTopLeft: [24, 72], paddingBottomRight: [24, 128], animate: true, duration: .7 });
+      document.querySelectorAll('.stop-button.is-active').forEach(b => b.classList.remove('is-active'));
+      tripMap?.fitAll();
     }
 
     function renderDayNavigation() {
@@ -959,74 +867,25 @@
     document.querySelectorAll('.road-panel').forEach(panel => panel.addEventListener('click', () => { document.querySelectorAll('.road-panel').forEach(item => item.classList.toggle('is-open', item === panel)); }));
     document.getElementById('print-button').addEventListener('click', () => window.print());
 
-    function loadScript(src) {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.append(script);
-      });
-    }
-
-    function initLeafletMap() {
-      if (!window.L) {
-        document.getElementById('map').innerHTML = '<div style="padding:28px">地图资源加载失败，请使用页面中的高德定位链接。</div>';
-        return;
-      }
-      map = L.map('map', { scrollWheelZoom: false, zoomControl: true });
-      map.on('popupopen', event => {
-        if (!mobileMapView.matches) return;
-        const { routeItem, routeParent } = event.popup.options;
-        if (routeItem) { map.closePopup(); showMapDetail(routeItem, routeParent, document.activeElement); }
-      });
-      map.on('dragstart', () => closeMapDetail());
+    function initMap() {
+      const el = document.getElementById('map');
+      const message = '地图资源加载失败，请使用页面中的高德定位链接。';
+      const fail = () => { el.classList.add('tm-map'); el.innerHTML = `<div class="tm-error">${message}</div>`; };
       document.querySelectorAll('.dock-link').forEach(link => link.addEventListener('click', () => closeMapDetail()));
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-      markerLayer = L.layerGroup().addTo(map);
-      photoLayer = L.layerGroup().addTo(map);
-      new ResizeObserver(() => map.invalidateSize({ pan: false })).observe(document.getElementById('map'));
       document.getElementById('map-reset').addEventListener('click', fitRouteOverview);
-      renderMap();
-    }
-
-    function initAmapMap(config) {
-      window._AMapSecurityConfig = { securityJsCode: config.securityJsCode };
-      loadScript(`https://webapi.amap.com/maps?v=2.0&key=${encodeURIComponent(config.jsKey)}&plugin=AMap.Scale,AMap.ToolBar`)
-        .then(() => {
-          amapMap = new AMap.Map('map', { zoom: 6, resizeEnable: true, viewMode: '2D', mapStyle: 'amap://styles/normal' });
-          amapSatellite = new AMap.TileLayer.Satellite({ zIndex: 1 });
-          amapRoadNet = new AMap.TileLayer.RoadNet({ zIndex: 2 });
-          amapInfoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -26), autoMove: false, closeWhenClickMap: true });
-          amapMap.addControl(new AMap.Scale());
-          amapMap.addControl(new AMap.ToolBar({ position: 'LT' }));
-          new ResizeObserver(() => amapMap.resize()).observe(document.getElementById('map'));
-          document.getElementById('map-reset').addEventListener('click', fitRouteOverview);
-          document.querySelector('.map-provider span').textContent = '高德卫星图 · 黄色公路 · 金色点为机位';
-          document.getElementById('map-mode').addEventListener('click', () => {
-            if (amapMode === 'satellite') {
-              amapSatellite?.setMap(null);
-              amapRoadNet?.setMap(null);
-              amapMode = 'standard';
-              amapMap.setMapStyle('amap://styles/normal');
-              document.getElementById('map-mode').textContent = '切换卫星图';
-              document.querySelector('.map-provider span').textContent = '高德标准图 · 黄色公路 · 金色点为机位';
-            } else {
-              amapMap.setMapStyle('amap://styles/normal');
-              amapSatellite?.setMap(amapMap);
-              amapRoadNet?.setMap(amapMap);
-              amapMode = 'satellite';
-              document.getElementById('map-mode').textContent = '切换标准图';
-              document.querySelector('.map-provider span').textContent = '高德卫星图 · 黄色公路 · 金色点为机位';
-            }
-          });
-          renderAmap();
-        })
-        .catch(() => initLeafletMap());
+      if (!window.TripMap) return fail();
+      TripMap.renderLegend(document.getElementById('map-terrain-legend'));
+      tripMap = TripMap.create({
+        container: el, base: 'map/base.pmtiles', terrain: 'map/terrain.pmtiles', landcover: 'map/landcover.pmtiles', reliefTint: false, landcoverFullZoom: 9, maxBounds: [114.6, 45.0, 126.6, 51.0], reliefRange: [150, 1700], routes: 'map/routes.geojson',
+        points: mapPoints(activeStops()), activeRoutes: routeIds(), fitButton: false, errorText: message,
+        onPointClick: point => selectItem(point.id, false),
+        onUnsupported: fail
+      });
+      tripMap?.map.on('dragstart', () => { if (mobileMapView.matches) closeMapDetail(); });
     }
 
     mountMapDetail();
-    initLeafletMap();
+    initMap();
 
     setupChecklist();
     setupDailyChecklists();

@@ -9,3 +9,5 @@ dist/
 work/
 coverage/
 *.log
+.pnpm-store/
+__pycache__/
