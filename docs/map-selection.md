@@ -16,6 +16,7 @@
 - MapLibre 的 raster / raster-dem 源缺瓦片时不会回退到父级，会出现空洞。土地覆盖因此用同一文件再挂一个封顶 `landcoverFullZoom`（z9）的源垫底；底图/地形用分层抽取（低缩放大范围、高缩放走廊）+ `maxBounds` 控制。
 - 高德导航：`TripMap.navSegments` / `TripMap.amapRoute` 把每个方案/天切成“起点 → 途经 → 终点”段并转 GCJ-02，皖南 74 条链接与旧实现逐字节一致（测试锁定）。
 - 体积：皖南 base 14.7 + terrain 18.7 + landcover 4.7 ≈ 38.0 MB；大兴安岭 9.7 + 16.4 + 10.8 ≈ 36.9 MB；每趟上限 40 MB。
+- 线上 Range：浏览器请求正常（见第 5 节第 8 步的实测记录）。
 - 已知局限：拖到已制作范围以外的高缩放区域只剩土地覆盖、没有道路和阴影；大兴安岭 z12 片区之间的土地覆盖是 z9 放大，偏软。
 
 ## 1. 需求（来自项目约束）
@@ -129,9 +130,9 @@ work/trips/<slug>/   # 被忽略：bbox.txt、osrm 原始响应、gen-style.mjs
 7. 地形：`raster-dem` 源 `{type:"raster-dem", url:"pmtiles://.../terrain.pmtiles", encoding:"terrarium", tileSize:512}`，加 `hillshade` 图层（属性：`hillshade-exaggeration`、`hillshade-shadow-color`、`hillshade-highlight-color`、`hillshade-accent-color`、`hillshade-illumination-direction`）[39][40]。
 8. 部署后复测 Range（失败则回到第 4 节兜底 1）：
    ```sh
-   curl -s -o /dev/null -D - -H "Range: bytes=0-16383" -H "Accept-Encoding: gzip, br, zstd" https://real-jacket.github.io/travel-journal/trips/<slug>/map/base.pmtiles
+   curl -s -o /dev/null -D - -H "Range: bytes=0-16383" -H "Accept-Encoding: identity" https://real-jacket.github.io/travel-journal/trips/<slug>/map/base.pmtiles
    ```
-   期望 `206`、`Content-Range: bytes 0-16383/<原文件大小>`、**无** `Content-Encoding`。
+   期望 `206`、`Content-Range: bytes 0-16383/<原文件大小>`、**无** `Content-Encoding`。2026-11-08 首次部署实测：带 `Accept-Encoding: gzip` 时 Pages 仍“先压缩再切片”（总长变成压缩后大小，切片无法解码）；但 Fetch 规范规定带 `Range` 的请求由浏览器改发 `Accept-Encoding: identity`，所以浏览器拿到的是原始字节。复测要用 identity，结果与本地文件逐字节一致，两份路书的线上地图在 Chromium 中完整渲染、无报错；Firefox/Safari 未实测。
 9. 深链（只由 WGS-84 数据在构建时生成）：
    - 高德单点：`https://uri.amap.com/marker?position=lon,lat&name=…&coordinate=wgs84&src=<站点名>&callnative=1`，官方明确 `coordinate=gaode|wgs84` [41]。
    - 高德导航：`https://uri.amap.com/navigation?from=lon,lat,名&to=lon,lat,名&via=lon,lat,名&mode=car&policy=0&src=…&callnative=1`；官方导航页**没有列出 coordinate 参数**，所以导航深链的坐标先转 GCJ-02（`gcoord`/`coordtransform` 类库），默认即 gaode [42]。
