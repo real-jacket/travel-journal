@@ -1,0 +1,21 @@
+{
+  "id": "example-trip",
+  "title": "示例旅行标题",
+  "subtitle": "一句话说明这趟旅行。",
+  "region": "目的地 · 片区",
+  "status": "planned",
+  "statusLabel": "计划中",
+  "date": "2027.03.12 — 03.15",
+  "dateNote": "候选日期",
+  "duration": "3天2晚",
+  "transport": "出发地 · 自驾",
+  "route": ["起点", "途经点", "终点"],
+  "description": "两三句话概括路线、题材和看点。",
+  "tags": ["题材"],
+  "image": "cover.webp",
+  "imageAlt": "封面图的文字描述。",
+  "imageCredit": "作者 · 作品名",
+  "imageSource": "",
+  "highlights": "逐日行程 · 机位 · 吃住",
+  "url": "https://example.com/my-trip-article"
+}

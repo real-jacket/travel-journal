@@ -10,7 +10,6 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Separator } from "@/components/ui/separator";
 import { trips, filterTrips, getFeaturedTrip } from "./data/trips.js";
 
-const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const currentTrip = getFeaturedTrip(trips);
 
 function PhotoCredit({ trip }) {
@@ -21,8 +20,8 @@ function TripCard({ trip, index }) {
   return (
     <article aria-labelledby={`trip-title-${trip.id}`}>
       <Card className="trip-card h-full">
-        <a className={`trip-image trip-image-${trip.id}`} href={asset(trip.path)} aria-label={`查看${trip.title}完整路书`}>
-          <img src={asset(trip.image)} alt={trip.imageAlt} width="900" height="600" loading="lazy" decoding="async" />
+        <a className={`trip-image trip-image-${trip.id}`} href={trip.url} aria-label={`查看${trip.title}完整路书`}>
+          <img src={trip.image} alt={trip.imageAlt} width="900" height="600" loading="lazy" decoding="async" />
           <span className="image-name">{trip.region}</span>
         </a>
         <CardHeader>
@@ -31,7 +30,7 @@ function TripCard({ trip, index }) {
             <Badge variant={trip.status === "planned" ? "secondary" : "outline"}>{trip.statusLabel}</Badge>
           </div>
           <CardTitle>
-            <h3 id={`trip-title-${trip.id}`}><a href={asset(trip.path)}>{trip.title}</a></h3>
+            <h3 id={`trip-title-${trip.id}`}><a href={trip.url}>{trip.title}</a></h3>
           </CardTitle>
           <CardDescription>{trip.subtitle}</CardDescription>
         </CardHeader>
@@ -50,7 +49,7 @@ function TripCard({ trip, index }) {
           <div className="trip-footer">
             <p>{trip.highlights}</p>
             <Button asChild variant="outline">
-              <a href={asset(trip.path)} aria-label={`打开${trip.title}完整路书`}>打开路书<ArrowUpRight data-icon="inline-end" /></a>
+              <a href={trip.url} aria-label={`打开${trip.title}完整路书`}>打开路书<ArrowUpRight data-icon="inline-end" /></a>
             </Button>
           </div>
           <PhotoCredit trip={trip} />
@@ -75,7 +74,7 @@ export function App() {
             <strong>山野取景</strong><span>TRAVEL<br />FIELD NOTES</span>
           </a>
           <nav aria-label="首页导航"><a href="#projects">旅行项目</a><a href="#about">关于路书</a></nav>
-          <Button asChild variant="outline"><a href={asset(currentTrip.path)}>查看推荐路书<ArrowUpRight data-icon="inline-end" /></a></Button>
+          <Button asChild variant="outline"><a href={currentTrip.url}>查看推荐路书<ArrowUpRight data-icon="inline-end" /></a></Button>
         </div>
       </header>
       <main id="main">
@@ -86,13 +85,13 @@ export function App() {
               <h1 id="hero-title">把每一次出发，<br />收进同一本<span>路书。</span></h1>
               <p>去山野，等一束光。<br />把路线、机位与沿途吃住整理好，<br />出发时从这里打开。</p>
               <div className="hero-actions">
-                <Button asChild size="lg"><a href={asset(currentTrip.path)} aria-label={`打开${currentTrip.title}完整路书`}>打开推荐路书<ArrowUpRight data-icon="inline-end" /></a></Button>
+                <Button asChild size="lg"><a href={currentTrip.url} aria-label={`打开${currentTrip.title}完整路书`}>打开推荐路书<ArrowUpRight data-icon="inline-end" /></a></Button>
                 <Button asChild variant="ghost" size="lg"><a href="#projects">查看所有旅行<ArrowDown data-icon="inline-end" /></a></Button>
               </div>
               <div className="hero-trip-note"><Badge variant="secondary">{currentTrip.status === "planned" ? "下一次出发" : "历史路书"}</Badge><span>{currentTrip.title} · {currentTrip.duration} · {currentTrip.dateNote}</span></div>
             </div>
             <figure className="hero-photo">
-              <a href={asset(currentTrip.path)} aria-label={`进入${currentTrip.title}路书`}><img src={asset(currentTrip.image)} alt={currentTrip.imageAlt} width="1200" height="680" fetchPriority="high" /></a>
+              <a href={currentTrip.url} aria-label={`进入${currentTrip.title}路书`}><img src={currentTrip.image} alt={currentTrip.imageAlt} width="1200" height="680" fetchPriority="high" /></a>
               <figcaption><span>{currentTrip.subtitle}</span><PhotoCredit trip={currentTrip} /></figcaption>
             </figure>
           </div>

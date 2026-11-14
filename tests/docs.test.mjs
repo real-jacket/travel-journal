@@ -19,7 +19,7 @@ async function markdown(directory) {
 test("Markdown 文档中的相对链接都指向存在的文件", async () => {
   const files = [
     ...["README.md", "AGENTS.md"].map((name) => path.join(root, name)),
-    ...(await Promise.all(["docs", "skills", "templates"].map((name) => markdown(path.join(root, name))))).flat(),
+    ...(await Promise.all(["docs", "skills", ".github"].map((name) => markdown(path.join(root, name))))).flat(),
   ];
   const broken = [];
   for (const file of files) {
