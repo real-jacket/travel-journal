@@ -11,3 +11,4 @@ coverage/
 *.log
 .pnpm-store/
 __pycache__/
+src/data/trips.generated.json

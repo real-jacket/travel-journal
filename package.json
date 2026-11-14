@@ -4,14 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "trips:sync": "node scripts/sync-trips.mjs",
+    "dev": "pnpm trips:sync && vite",
+    "build": "pnpm trips:sync && vite build && node scripts/prepare-sites-build.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "test": "node --test tests/portal.test.mjs tests/workflow.test.mjs tests/docs.test.mjs",
-    "check": "pnpm test && pnpm build && pnpm test:sites",
-    "trip:new": "node scripts/new-trip.mjs",
-    "map:build": "node scripts/build-trip-map.mjs"
+    "test": "pnpm trips:sync && node --test tests/trip-schema.test.mjs tests/portal.test.mjs tests/docs.test.mjs",
+    "check": "pnpm test && pnpm build && pnpm test:sites"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
